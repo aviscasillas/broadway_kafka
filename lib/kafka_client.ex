@@ -9,8 +9,9 @@ defmodule BroadwayKafka.KafkaClient do
            offset_commit_on_ack: boolean,
            topics: [:brod.topic()],
            group_config: keyword,
-           client_config: keyword
-         }
+           client_config: keyword,
+           after_fetch: ([Brodway.Message] -> [Brodway.Message])
+  }
 
   @typep offset_reset_policy :: :earliest | :latest
 

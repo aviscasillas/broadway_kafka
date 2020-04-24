@@ -464,9 +464,9 @@ defmodule BroadwayKafka.Producer do
 
     case client.fetch(client_id, topic, partition, offset, config[:fetch_config], config) do
       {:ok, {_watermark_offset, kafka_messages}} ->
-        Enum.map(kafka_messages, fn k_msg ->
-          wrap_message(k_msg, topic, partition, generation_id)
-        end)
+        kafka_messages
+        |> Enum.map(fn k_msg -> wrap_message(k_msg, topic, partition, generation_id) end)
+        |> config[:after_fetch].()
 
       {:error, reason} ->
         raise "cannot fetch records from Kafka (topic=#{topic} partition=#{partition} " <>

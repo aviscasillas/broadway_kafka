@@ -49,6 +49,8 @@ defmodule BroadwayKafka.BrodClient do
            validate(opts, :offset_commit_on_ack, default: @default_offset_commit_on_ack),
          {:ok, offset_reset_policy} <-
            validate(opts, :offset_reset_policy, default: @default_offset_reset_policy),
+         {:ok, after_fetch} <-
+           validate(opts, :after_fetch, default: fn messages -> messages end ),
          {:ok, group_config} <- validate_group_config(opts),
          {:ok, fetch_config} <- validate_fetch_config(opts),
          {:ok, client_config} <- validate_client_config(opts) do
@@ -61,6 +63,7 @@ defmodule BroadwayKafka.BrodClient do
          reconnect_timeout: reconnect_timeout,
          offset_commit_on_ack: offset_commit_on_ack,
          offset_reset_policy: offset_reset_policy,
+         after_fetch: after_fetch,
          group_config: [{:offset_commit_policy, @offset_commit_policy} | group_config],
          fetch_config: Map.new(fetch_config || []),
          client_config: client_config
